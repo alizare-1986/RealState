@@ -1,9 +1,13 @@
 "use client";
 
+import CustomDatePicker from "@/module/CustomDatePicker";
+import Loader from "@/module/Loader";
 import RadioList from "@/module/RadioList";
 import TextInput from "@/module/TextInput";
+import TextList from "@/module/TextList";
 import styles from "@/template/AddProfilePage.module.css";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 function AddProfilePage() {
   const [profileData, setProfileData] = useState({
     title: "",
@@ -17,9 +21,23 @@ function AddProfilePage() {
     rules: [],
     amenities: [],
   });
-  const submitHandler=()=>{
-    console.log(profileData);
-  }
+  const [loading, setLoading] = useState(false);
+
+  const submitHandler = async () => {
+    setLoading(true);
+    const res = await fetch("/api/profile", {
+      method: "POST",
+      body: JSON.stringify(profileData),
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await res.json();
+    setLoading(false);
+    if (data.error) {
+      toast.error(data.error);
+    } else {
+      toast.success(data.message);
+    }
+  };
   return (
     <div className={styles.container}>
       <h3>ثبت آگهی</h3>
@@ -61,7 +79,30 @@ function AddProfilePage() {
         setProfileData={setProfileData}
       />
       <RadioList profileData={profileData} setProfileData={setProfileData} />
-      <button className={styles.submit} onClick={submitHandler}>ثبت آگهی</button>
+      <TextList
+        title="امکانات رفاهی"
+        type="amenities"
+        profileData={profileData}
+        setProfileData={setProfileData}
+      />
+      <TextList
+        title="قوانین"
+        type="rules"
+        profileData={profileData}
+        setProfileData={setProfileData}
+      />
+      <CustomDatePicker
+        profileData={profileData}
+        setProfileData={setProfileData}
+      />
+      <Toaster />
+      {loading ? (
+      <Loader/>
+      ) : (
+        <button className={styles.submit} onClick={submitHandler}>
+          ثبت آگهی
+        </button>
+      )}
     </div>
   );
 }

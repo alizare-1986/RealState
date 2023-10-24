@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { ThreeDots } from "react-loader-spinner";
+import Loader from "@/module/Loader";
 function SigninPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,16 +49,7 @@ function SigninPage() {
         />
 
         {loading ? (
-          <ThreeDots
-            height="80"
-            width="80"
-            radius="9"
-            color="#4fa94d"
-            ariaLabel="three-dots-loading"
-            wrapperStyle={{ margin: "auto" }}
-            wrapperClassName=""
-            visible={true}
-          />
+        <Loader/>
         ) : (
           <button type="submit" onClick={signinHnadler}>
             ورود
