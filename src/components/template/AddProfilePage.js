@@ -6,9 +6,11 @@ import RadioList from "@/module/RadioList";
 import TextInput from "@/module/TextInput";
 import TextList from "@/module/TextList";
 import styles from "@/template/AddProfilePage.module.css";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-function AddProfilePage() {
+function AddProfilePage({ data }) {
+  const router = useRouter();
   const [profileData, setProfileData] = useState({
     title: "",
     description: "",
@@ -22,6 +24,26 @@ function AddProfilePage() {
     amenities: [],
   });
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (data) setProfileData(data);
+  }, [data]);
+  const editHandler = async () => {
+    setLoading(true);
+    const res = await fetch("/api/profile", {
+      method: "PATCH",
+      body: JSON.stringify(profileData),
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await res.json();
+    setLoading(false);
+
+    if (data.error) {
+      toast.error(data.error);
+    } else {
+      toast.success(data.message);
+      router.push("/dashboard/my-profiles");
+    }
+  };
 
   const submitHandler = async () => {
     setLoading(true);
@@ -31,16 +53,19 @@ function AddProfilePage() {
       headers: { "Content-Type": "application/json" },
     });
     const data = await res.json();
+
     setLoading(false);
     if (data.error) {
       toast.error(data.error);
     } else {
       toast.success(data.message);
+      router.replace("/dashboard/my-profiles");
+      router.refresh()
     }
   };
   return (
     <div className={styles.container}>
-      <h3>ثبت آگهی</h3>
+      <h3>{data ? "ویرایش آگهی" : "ثبت آگهی"}</h3>
       <TextInput
         title="عنوان آگهی"
         name="title"
@@ -97,7 +122,11 @@ function AddProfilePage() {
       />
       <Toaster />
       {loading ? (
-      <Loader/>
+        <Loader />
+      ) : data ? (
+        <button className={styles.submit} onClick={editHandler}>
+          ویرایش آگهی
+        </button>
       ) : (
         <button className={styles.submit} onClick={submitHandler}>
           ثبت آگهی
