@@ -8,6 +8,7 @@ const cities = [
   "اصفهان",
   "شیراز",
   "خرم آباد",
+  "دزفول"
 ];
 const categories = {
   apartment: "آپارتمان",

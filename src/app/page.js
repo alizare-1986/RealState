@@ -1,8 +1,9 @@
+import HomePage from "@/template/HomePage";
 
 export default function Home() {
   return (
     <main>
- پروژه املاک
+      <HomePage/>
     </main>
   )
 }
