@@ -4,7 +4,7 @@ import { sp } from "@/utils/replaceNumber";
 import Link from "next/link";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { BiLeftArrowAlt } from "react-icons/bi";
-function Card({ data: { title, category, price, location } }) {
+function Card({ data: {_id, title, category, price, location } }) {
   return (
     <div className={styles.container}>
       <div className={styles.icon}>{icons[category]}</div>
@@ -14,8 +14,8 @@ function Card({ data: { title, category, price, location } }) {
         {location}
       </p>
       <span>{sp(price)} :تومان</span>
-      <Link href={"/"}>
-        {" "}
+      <Link href={`/buy-residential/${_id}`}>
+      
         مشاهده آگهی
         <BiLeftArrowAlt />
       </Link>
